@@ -1,6 +1,12 @@
 # Qt Open UI Chat
 
+## Introduction
+
 A C++ and QML based chat interface component and example application, designed to connect with AI servers like llama.cpp.
+
+| LLM Server | Light Theme | Dark Theme |
+|-------------|-------------|------------|
+| ![LLM Server](docs/endpoint-details.png) | ![Light Theme](docs/light-theme.png) | ![Dark Theme](docs/dark-theme.png) |
 
 ## Features
 
