@@ -13,10 +13,10 @@ jobs:
         os: [windows-2022, ubuntu-latest]
         include:
           - os: windows-2022
-            qt_version: '6.5.0'
-            qt_arch: 'win64_msvc2019_64'
+            qt_version: '6.10.0'
+            qt_arch: 'win64_msvc2022_64'
           - os: ubuntu-latest
-            qt_version: '6.5.0'
+            qt_version: '6.10.0'
             qt_arch: 'gcc_64'
 
     runs-on: ${{ matrix.os }}
