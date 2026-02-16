@@ -1,0 +1,57 @@
+name: Build and Package
+
+on:
+  push:
+    branches: [ master, develop ]
+  pull_request:
+    branches: [ master, develop ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [windows-2022, ubuntu-latest]
+        include:
+          - os: windows-2022
+            qt_version: '6.5.0'
+            qt_arch: 'win64_msvc2019_64'
+          - os: ubuntu-latest
+            qt_version: '6.5.0'
+            qt_arch: 'gcc_64'
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: ${{ matrix.qt_version }}
+        arch: ${{ matrix.qt_arch }}
+        modules: 'qtnetwork' # Network is part of essentials but ensuring it's there
+
+    - name: Setup Ninja
+      uses: seanmiddleditch/gha-setup-ninja@v3
+
+    - name: Configure CMake
+      run: cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build
+      run: cmake --build build --config Release
+
+    - name: Package
+      run: |
+        cd build
+        cpack -C Release
+      shell: bash
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: qt-open-ui-chat-${{ matrix.os }}
+        path: |
+          build/*.exe
+          build/*.zip
+          build/*.deb
+          build/*.tar.gz

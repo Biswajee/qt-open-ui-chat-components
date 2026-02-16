@@ -1,63 +1,74 @@
-# Qt Open UI Chat Example
+# Qt Open UI Chat
 
-A modern, responsive chat UI component (`ChatFrame`) styled like open-web-ui, built with Qt 6 and QML.  
-Includes a reusable UI library and an example application.
+A C++ and QML based chat interface component and example application, designed to connect with AI servers like llama.cpp.
 
 ## Features
 
-- **QML-based**: Modern, responsive, and easily styled.
-- **Open-web-ui look**: Rounded corners, shadows, dark theme, and spacing.
-- **Modular**: UI library (`ChatUI` module) and example app.
-- **Qt6 only**: No Qt5 compatibility.
+-   **Modern UI**: Clean, responsive chat interface inspired by Open Web UI.
+-   **Theme Support**: Toggle between Light (default) and Dark modes.
+-   **Server Integration**: Connects to OpenAI-compatible endpoints (e.g., llama.cpp server).
+-   **Self-Contained**: Builds into a standalone executable with all dependencies deployed.
 
-## Project Structure
-
-```
-qt-open-ui/
-├── CMakeLists.txt
-├── ui/
-│   ├── CMakeLists.txt
-│   └── ChatFrame.qml
-├── example/
-│   ├── CMakeLists.txt
-│   ├── main.cpp
-│   └── Main.qml
-└── README.md
-```
-
-## Build Instructions
+## Building from Source
 
 ### Prerequisites
 
-- Qt 6.x (with QML, Quick, and Quick Controls modules)
-- CMake 3.16+
-- C++17 compiler
+-   **CMake** (3.16+)
+-   **Qt 6.5+** (Core, Gui, Qml, Quick, Network, QuickControls2)
+-   **Compiler**: MSVC (Windows) or GCC/Clang (Linux)
+-   **Build Tool**: Ninja or Visual Studio
 
-### Build
+### Steps
 
-```sh
-mkdir build
-cd build
-cmake -DCMAKE_BUILD_TYPE=Release ..
-cmake --build .
-```
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/Biswajee/qt-open-ui-chat-components.git
+    cd qt-open-ui-workspace
+    ```
 
-### Run
+2.  Build using CMake:
+    ```bash
+    mkdir build
+    cd build
+    cmake ..
+    cmake --build . --config Release
+    ```
 
-The built executable and required DLLs will be in:
-- `__Builds/x64/Debug/bin` or
-- `__Builds/x64/Release/bin`
+3.  Run the application:
+    -   **Windows**: `example\Release\qt-open-ui-chat.exe` (Dependencies are automatically deployed).
+    -   **Linux**: `./example/qt-open-ui-chat`
 
-Run `chat_example.exe` from the appropriate `bin` directory.
+## Setup Llama.cpp on Windows on Snapdragon
 
-> **Tip:** If you see missing DLL or QML module errors, run [`windeployqt`](https://doc.qt.io/qt-6/windows-deployment.html#windeployqt) on the executable.
+To use this tool with a local AI model on Windows on Arm (Snapdragon), follow these steps:
 
-## Usage
+1.  **Download Llama.cpp**:
+    -   Go to the [llama.cpp releases](https://github.com/ggerganov/llama.cpp/releases).
+    -   Download the `llama-bxxxx-bin-win-arm64-*.zip` (ensure it matches your architecture, ARM64 for Snapdragon).
+    -   Extract the zip file.
 
-- The `ChatFrame` component is available as a QML module:  
-  `import ChatUI 1.0`
-- See `example/Main.qml` for usage.
+2.  **Download a Model**:
+    -   Download a GGUF model file (e.g., from [Hugging Face](https://huggingface.co/models?search=gguf)).
+    -   Example: `llama-2-7b-chat.Q4_K_M.gguf`.
 
-## License
+3.  **Run the Server**:
+    -   Open PowerShell or Command Prompt.
+    -   Navigate to the extracted llama.cpp folder.
+    -   Run the server command:
+        ```powershell
+        .\server.exe -m path\to\your\model.gguf --host 0.0.0.0 --port 8080
+        ```
+    -   The server should start and listen on `http://localhost:8080`.
 
-MIT License (add your license here)
+4.  **Connect with Qt Open UI Chat**:
+    -   Launch `qt-open-ui-chat`.
+    -   In the "Connect to Server" screen, enter: `http://localhost:8080/v1/chat/completions`.
+    -   Click "Connect".
+    -   Start chatting!
+
+## CI/CD and Packaging
+
+This project includes a GitHub Actions workflow that builds and packages the application for Windows and Linux automatically on every push.
+
+-   **Windows**: Generates an NSIS installer (`.exe`).
+-   **Linux**: Generates a `.deb` package and tarball.
